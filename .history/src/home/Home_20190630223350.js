@@ -75,7 +75,7 @@ export default class Home extends React.Component {
 
   GetData = () => {
     // Service to get the data from the server to render
-    return fetch("http://restaurantmanagement.ftumedia.tech/api/table", {
+    return fetch("http://192.168.8.100:8000/api/table", {
       method: "GET",
       headers: {
         Accept: "application/json",

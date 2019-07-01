@@ -22,7 +22,7 @@ export default class Table extends React.Component {
     //True to show the loader
     this.state = { refreshing: true };
     //Running the getData Service for the first time
-    this.GetData("http://restaurantmanagement.ftumedia.tech/api/loadMenuByTableId"+this.props.state.params.table.id);
+    this.GetData("http://192.168.8.100:8000/api/loadMenuByTableId"+this.props.state.params.table.id);
   }
 
   componentDidMount() {

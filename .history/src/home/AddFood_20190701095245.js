@@ -52,7 +52,7 @@ export default class AddFood extends React.Component {
 
   GetData = () => {
     // Service to get the data from the server to render
-    return fetch("http://restaurantmanagement.ftumedia.tech/api/food", {
+    return fetch("http://192.168.8.100:8000/api/food", {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -136,7 +136,7 @@ export default class AddFood extends React.Component {
   }
 
   createNewBill = () => {
-    return fetch("http://restaurantmanagement.ftumedia.tech/api/addBill", {
+    return fetch("http://192.168.8.100:8000/api/addBill", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -147,7 +147,7 @@ export default class AddFood extends React.Component {
       })
     }).then(() => {
       this.GetBillId(
-        "http://restaurantmanagement.ftumedia.tech/api/getBillUnPaid/" +
+        "http://192.168.8.100:8000/api/getBillUnPaid/" +
           this.state.table.id
       );
     });
