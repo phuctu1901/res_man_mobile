@@ -20,17 +20,8 @@ import NumberFormat from "react-number-format";
 export default class AddFood extends React.Component {
   constructor(props) {
     super(props);
-    const { state } = this.props.navigation;
-    let billId = state.params.billId;
-    let table = state.params.table;
     //True to show the loader
-    this.state = {
-      refreshing: true,
-      selected: [],
-      foodSelected: [],
-      billId: billId,
-      table: table
-    };
+    this.state = { refreshing: true, selected: [], foodSelected: [] };
     //Running the getData Service for the first time
     this.GetData();
   }
@@ -112,59 +103,15 @@ export default class AddFood extends React.Component {
     console.log("Add: " + id);
   };
 
-  GetBillId(url) {
-    return fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-      // body: JSON.stringify({
-      //   username: "phuctu1901"
-      // })
-    })
-      .then(response => response.text())
-      .then(responseText => {
-        this.setState({
-          billId: responseText
-        });
-        console.log(responseText);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }
-
-  createNewBill = () => {
-    return fetch("http://restaurantmanagement.ftumedia.tech/api/addBill", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        table_id: this.state.table.id
-      })
-    }).then(() => {
-      this.GetBillId(
-        "http://restaurantmanagement.ftumedia.tech/api/getBillUnPaid/" +
-          this.state.table.id
-      );
-    });
-  };
-
   sendToServer = () => {
-    var data = [];
     var tmp = [];
     for (var i = 1; i <= this.state.foodSelected.length; i++) {
-      if (this.state.foodSelected[i] > 0) {
+      if (this.state.foodSelected > 0) {
         var newObj = { food_id: i, food_count: this.state.foodSelected[i] };
         tmp.push(newObj);
       }
     }
-    data.push({foods: tmp});
-    data.push({table_id: this.state.table.id});
-    console.log(data);
+    console.log(tmp);
   };
 
   renderItem = ({ item, index }) => {

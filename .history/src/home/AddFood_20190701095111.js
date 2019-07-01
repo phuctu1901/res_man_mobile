@@ -162,8 +162,8 @@ export default class AddFood extends React.Component {
         tmp.push(newObj);
       }
     }
-    data.push({foods: tmp});
-    data.push({table_id: this.state.table.id});
+    data.push(tmp);
+    data.push(this.state.table.id);
     console.log(data);
   };
 

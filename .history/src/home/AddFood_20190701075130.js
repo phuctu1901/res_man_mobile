@@ -20,21 +20,12 @@ import NumberFormat from "react-number-format";
 export default class AddFood extends React.Component {
   constructor(props) {
     super(props);
-    const { state } = this.props.navigation;
-    let billId = state.params.billId;
-    let table = state.params.table;
     //True to show the loader
-    this.state = {
-      refreshing: true,
-      selected: [],
-      foodSelected: [],
-      billId: billId,
-      table: table
-    };
+    this.state = { refreshing: true };
+    this.state = { selected: [] };
     //Running the getData Service for the first time
     this.GetData();
   }
-  _keyExtractor = (item, index) => item.id;
 
   static navigationOptions = {
     title: "Thêm món",
@@ -69,9 +60,6 @@ export default class AddFood extends React.Component {
           //Setting the data source for the list to render
           dataSource: responseJson
         });
-        for (var i = 1; i <= responseJson.length; i++) {
-          this.state.foodSelected[i] = 0;
-        }
         console.log(responseJson);
       })
       .catch(error => {
@@ -90,82 +78,15 @@ export default class AddFood extends React.Component {
     Alert.alert("hello");
   }
 
-  remove = id => {
-    if (this.state.foodSelected[id] == 0) {
-      Alert.alert("Sản phẩm này chưa được chọn");
-    } else {
-      console.log("Remove: " + id);
-      this.state.foodSelected[id] = this.state.foodSelected[id] - 1;
-      this.setState({ foodSelected: this.state.foodSelected });
-
-      // this.state.selected.push({id:id, count: 1});
-    }
-
-    console.log(this.state.foodSelected);
-  };
-
-  add = id => {
-    this.state.foodSelected[id] = this.state.foodSelected[id] + 1;
-    this.setState({ foodSelected: this.state.foodSelected });
-    console.log(this.state.foodSelected);
-
-    console.log("Add: " + id);
-  };
-
-  GetBillId(url) {
-    return fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-      // body: JSON.stringify({
-      //   username: "phuctu1901"
-      // })
-    })
-      .then(response => response.text())
-      .then(responseText => {
-        this.setState({
-          billId: responseText
-        });
-        console.log(responseText);
-      })
-      .catch(error => {
-        console.error(error);
-      });
+  remove =(id)=> {
+    console.log("Remove: "+id);
   }
 
-  createNewBill = () => {
-    return fetch("http://restaurantmanagement.ftumedia.tech/api/addBill", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        table_id: this.state.table.id
-      })
-    }).then(() => {
-      this.GetBillId(
-        "http://restaurantmanagement.ftumedia.tech/api/getBillUnPaid/" +
-          this.state.table.id
-      );
-    });
-  };
 
-  sendToServer = () => {
-    var data = [];
-    var tmp = [];
-    for (var i = 1; i <= this.state.foodSelected.length; i++) {
-      if (this.state.foodSelected[i] > 0) {
-        var newObj = { food_id: i, food_count: this.state.foodSelected[i] };
-        tmp.push(newObj);
-      }
-    }
-    data.push({foods: tmp});
-    data.push({table_id: this.state.table.id});
-    console.log(data);
-  };
+  add=(id)=>{
+    console.log("Add: "+id);
+
+  }
 
   renderItem = ({ item, index }) => {
     if (item.empty === true) {
@@ -176,16 +97,12 @@ export default class AddFood extends React.Component {
 
       <View style={styles.item}>
         <Text style={styles.itemText}>{item.title}</Text>
-        <Text style={styles.itemPrice}>Đơn giá: {item.price}</Text>
-        <Text style={styles.itemCount}>
-          Số lượng: {this.state.foodSelected[item.id]}
-        </Text>
-
+        <Text style={styles.itemCount}>{item.price}</Text>
         <TouchableOpacity
           activeOpacity={0.8}
           style={styles.btn1}
-          disabled={this.state.foodSelected[item.id] == 0}
-          onPress={() => this.remove(item.id)}
+          //   disabled={this.state.disabled}
+          onPress={this.remove(item.id)}
         >
           <Image
             source={require("../assets/img/remove.png")}
@@ -196,7 +113,7 @@ export default class AddFood extends React.Component {
           activeOpacity={0.8}
           style={styles.btn2}
           //   disabled={this.state.disabled}
-          onPress={() => this.add(item.id)}
+          onPress={this.add(item.id)}
         >
           <Image
             source={require("../assets/img/add.png")}
@@ -237,7 +154,6 @@ export default class AddFood extends React.Component {
           ItemSeparatorComponent={this.ListViewItemSeparator}
           enableEmptySections={true}
           renderItem={this.renderItem}
-          keyExtractor={this._keyExtractor}
           refreshControl={
             <RefreshControl
               //refresh control used for the Pull to Refresh
@@ -247,12 +163,9 @@ export default class AddFood extends React.Component {
           }
         />
         <View style={styles.container2}>
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={() => this.sendToServer()}
-          >
+          <View style={styles.btn}>
             <Text>Apply</Text>
-          </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
@@ -293,10 +206,6 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent"
   },
   itemText: {
-    color: "#fff"
-  },
-  itemPrice: {
-    alignItems: "flex-end",
     color: "#fff"
   },
   itemCount: {

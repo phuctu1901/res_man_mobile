@@ -22,15 +22,9 @@ export default class AddFood extends React.Component {
     super(props);
     const { state } = this.props.navigation;
     let billId = state.params.billId;
-    let table = state.params.table;
+    let table =state.params.table;
     //True to show the loader
-    this.state = {
-      refreshing: true,
-      selected: [],
-      foodSelected: [],
-      billId: billId,
-      table: table
-    };
+    this.state = { refreshing: true, selected: [], foodSelected: [], billId: billId , table:table};
     //Running the getData Service for the first time
     this.GetData();
   }
@@ -112,30 +106,8 @@ export default class AddFood extends React.Component {
     console.log("Add: " + id);
   };
 
-  GetBillId(url) {
-    return fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-      // body: JSON.stringify({
-      //   username: "phuctu1901"
-      // })
-    })
-      .then(response => response.text())
-      .then(responseText => {
-        this.setState({
-          billId: responseText
-        });
-        console.log(responseText);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }
 
-  createNewBill = () => {
+  createNewBill=()=>{
     return fetch("http://restaurantmanagement.ftumedia.tech/api/addBill", {
       method: "POST",
       headers: {
@@ -145,16 +117,14 @@ export default class AddFood extends React.Component {
       body: JSON.stringify({
         table_id: this.state.table.id
       })
-    }).then(() => {
-      this.GetBillId(
-        "http://restaurantmanagement.ftumedia.tech/api/getBillUnPaid/" +
-          this.state.table.id
-      );
-    });
-  };
+    })
+      .then(responseJson => {
+      });
+  }
 
   sendToServer = () => {
-    var data = [];
+
+    var data=[];
     var tmp = [];
     for (var i = 1; i <= this.state.foodSelected.length; i++) {
       if (this.state.foodSelected[i] > 0) {
@@ -162,8 +132,8 @@ export default class AddFood extends React.Component {
         tmp.push(newObj);
       }
     }
-    data.push({foods: tmp});
-    data.push({table_id: this.state.table.id});
+    data.push(tmp);
+    data.push(this.state.billId);
     console.log(data);
   };
 

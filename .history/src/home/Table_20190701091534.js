@@ -118,7 +118,7 @@ export default class Table extends React.Component {
   }
 
   addMore() {
-    this.props.navigation.navigate("AddFood", {billId:this.state.billId, table:this.state.table});
+    this.props.navigation.navigate("AddFood", {billId:this.state.billId});
   }
 
   renderItem = ({ item, index }) => {

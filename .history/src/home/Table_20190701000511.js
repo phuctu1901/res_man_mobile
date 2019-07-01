@@ -7,42 +7,70 @@ import {
   Alert,
   TouchableWithoutFeedback,
   Dimensions,
-  ActivityIndicator,
   Image,
   TouchableOpacity,
   RefreshControl
 } from "react-native";
 
 import { fonts, colors } from "../assets/theme";
+// const data = [
+//   { key: "A", status: "Trống" },
+//   { key: "B", status: "Có khách" },
+//   { key: "C", status: "Trống" },
+//   { key: "D", status: "Đã đặt bàn" },
+//   { key: "E", status: "Đã đặt bàn" },
+//   { key: "F", status: "Đã đặt bàn" },
+//   { key: "1", status: "Trống" },
+//   { key: "2", status: "Có khách" },
+//   { key: "3", status: "Trống" },
+//   { key: "4", status: "Đã đặt bàn" },
+//   { key: "5", status: "Đã đặt bàn" },
+//   { key: "6", status: "Đã đặt bàn" },
+//   { key: "7", status: "Trống" },
+//   { key: "8", status: "Có khách" },
+//   { key: "9", status: "Trống" },
+//   { key: "10", status: "Đã đặt bàn" },
+//   { key: "11", status: "Đã đặt bàn" }
+//   // { key: 'K' },
+//   // { key: 'L' },
+// ];
+
+const formatData = (data, numColumns) => {
+  const numberOfFullRows = Math.floor(data.length / numColumns);
+
+  let numberOfElementsLastRow = data.length - numberOfFullRows * numColumns;
+  while (
+    numberOfElementsLastRow !== numColumns &&
+    numberOfElementsLastRow !== 0
+  ) {
+    data.push({ key: `blank-${numberOfElementsLastRow}`, empty: true });
+    numberOfElementsLastRow++;
+  }
+
+  return data;
+};
+
+const numColumns = 3;
 
 export default class Table extends React.Component {
   constructor(props) {
     super(props);
     //True to show the loader
-    this.state = {
-      refreshing: true,
-      url:
-        "http://restaurantmanagement.ftumedia.tech/api/loadMenuByTableId/" +
-        this.props.navigation.state.params.table.id
-    };
-
+    this.state = { refreshing: true };
     //Running the getData Service for the first time
     this.GetData();
-    this.GetBillId("http://restaurantmanagement.ftumedia.tech/api/getBillUnPaid/" +
-    this.props.navigation.state.params.table.id)
   }
-
-  _keyExtractor = (item, index) => item.title;
 
   componentDidMount() {
     const { state } = this.props.navigation;
     let table = state.params.table;
     this.setState({ table: table });
+    Alert.alert(table.title);
   }
 
   static navigationOptions = props1 => {
     return {
-      title: "Chi tiết: " + props1.navigation.state.params.table.title,
+      title: "Chi tiết: "+props1.navigation.state.params.table.title,
       headerTitleStyle: {
         color: "white",
         fontSize: 25,
@@ -56,6 +84,7 @@ export default class Table extends React.Component {
     };
   };
 
+
   onRefresh() {
     //Clear old data of the list
     this.setState({ dataSource: [] });
@@ -64,9 +93,8 @@ export default class Table extends React.Component {
   }
 
   GetData = () => {
-    console.log("My URL is: " + this.state.url);
     // Service to get the data from the server to render
-    return fetch(this.state.url, {
+    return fetch("http://restaurantmanagement.ftumedia.tech/api/loadMenuByTableId/3", {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -90,47 +118,24 @@ export default class Table extends React.Component {
       });
   };
 
-  GetBillId(url) {
-    return fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-      // body: JSON.stringify({
-      //   username: "phuctu1901"
-      // })
-    })
-    .then(response => response.text())
-    .then(responseText => {
-        this.setState({
-          billId: responseText
-        });
-        console.log(responseText);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }
-
   viewTicket(item) {
     this.props.navigation.navigate("AddFood");
   }
 
   addMore() {
-    this.props.navigation.navigate("AddFood", {billId:this.state.billId, table:this.state.table});
+    this.props.navigation.navigate("AddFood");
   }
 
   renderItem = ({ item, index }) => {
     if (item.empty === true) {
       return <View style={[styles.item, styles.itemInvisible]} />;
     }
-    return (
-      <View style={styles.item}>
-        <Text style={styles.itemText}>{item.title}</Text>
-        <Text style={styles.itemCount}>{item.count}</Text>
-      </View>
-    );
+      return (
+        <View style={styles.item}>
+          <Text style={styles.itemText}>{item.title}</Text>
+          <Text style={styles.itemCount}>{item.count}</Text>
+        </View>
+      );
   };
   ListViewItemSeparator = () => {
     return (
@@ -146,14 +151,6 @@ export default class Table extends React.Component {
   };
 
   render() {
-    if (this.state.refreshing) {
-      return (
-        //loading view while data is loading
-        <View style={{ flex: 1, paddingTop: 20 }}>
-          <ActivityIndicator />
-        </View>
-      );
-    }
     return (
       <View style={styles.container}>
         <FlatList
@@ -161,7 +158,6 @@ export default class Table extends React.Component {
           ItemSeparatorComponent={this.ListViewItemSeparator}
           enableEmptySections={true}
           renderItem={this.renderItem}
-          keyExtractor={this._keyExtractor}
           refreshControl={
             <RefreshControl
               //refresh control used for the Pull to Refresh
@@ -177,7 +173,7 @@ export default class Table extends React.Component {
           onPress={() => this.addMore()}
         >
           <Image
-            source={require("../assets/img/add.png")}
+            source={require("../assets/img/buyticket.png")}
             style={styles.btnImage}
           />
         </TouchableOpacity>

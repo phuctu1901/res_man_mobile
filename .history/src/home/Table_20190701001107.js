@@ -22,22 +22,19 @@ export default class Table extends React.Component {
     this.state = {
       refreshing: true,
       url:
-        "http://restaurantmanagement.ftumedia.tech/api/loadMenuByTableId/" +
+        "http://restaurantmanagement.ftumedia.tech/api/loadMenuByTableId" +
         this.props.navigation.state.params.table.id
     };
 
     //Running the getData Service for the first time
-    this.GetData();
-    this.GetBillId("http://restaurantmanagement.ftumedia.tech/api/getBillUnPaid/" +
-    this.props.navigation.state.params.table.id)
+    this.GetData(this.state.url);
   }
-
-  _keyExtractor = (item, index) => item.title;
 
   componentDidMount() {
     const { state } = this.props.navigation;
     let table = state.params.table;
     this.setState({ table: table });
+    Alert.alert(table.title);
   }
 
   static navigationOptions = props1 => {
@@ -60,13 +57,13 @@ export default class Table extends React.Component {
     //Clear old data of the list
     this.setState({ dataSource: [] });
     //Call the Service to get the latest data
-    this.GetData();
+    this.GetData(this.state.url);
   }
 
-  GetData = () => {
-    console.log("My URL is: " + this.state.url);
+  GetData = url => {
+    Alert.alert(url);
     // Service to get the data from the server to render
-    return fetch(this.state.url, {
+    return fetch(url, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -90,35 +87,12 @@ export default class Table extends React.Component {
       });
   };
 
-  GetBillId(url) {
-    return fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-      // body: JSON.stringify({
-      //   username: "phuctu1901"
-      // })
-    })
-    .then(response => response.text())
-    .then(responseText => {
-        this.setState({
-          billId: responseText
-        });
-        console.log(responseText);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }
-
   viewTicket(item) {
     this.props.navigation.navigate("AddFood");
   }
 
   addMore() {
-    this.props.navigation.navigate("AddFood", {billId:this.state.billId, table:this.state.table});
+    this.props.navigation.navigate("AddFood");
   }
 
   renderItem = ({ item, index }) => {
@@ -161,7 +135,6 @@ export default class Table extends React.Component {
           ItemSeparatorComponent={this.ListViewItemSeparator}
           enableEmptySections={true}
           renderItem={this.renderItem}
-          keyExtractor={this._keyExtractor}
           refreshControl={
             <RefreshControl
               //refresh control used for the Pull to Refresh
@@ -177,7 +150,7 @@ export default class Table extends React.Component {
           onPress={() => this.addMore()}
         >
           <Image
-            source={require("../assets/img/add.png")}
+            source={require("../assets/img/buyticket.png")}
             style={styles.btnImage}
           />
         </TouchableOpacity>

@@ -28,11 +28,9 @@ export default class Table extends React.Component {
 
     //Running the getData Service for the first time
     this.GetData();
-    this.GetBillId("http://restaurantmanagement.ftumedia.tech/api/getBillUnPaid/" +
-    this.props.navigation.state.params.table.id)
   }
 
-  _keyExtractor = (item, index) => item.title;
+  _keyExtractor = (item, index) => item.id;
 
   componentDidMount() {
     const { state } = this.props.navigation;
@@ -90,35 +88,12 @@ export default class Table extends React.Component {
       });
   };
 
-  GetBillId(url) {
-    return fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-      // body: JSON.stringify({
-      //   username: "phuctu1901"
-      // })
-    })
-    .then(response => response.text())
-    .then(responseText => {
-        this.setState({
-          billId: responseText
-        });
-        console.log(responseText);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }
-
   viewTicket(item) {
     this.props.navigation.navigate("AddFood");
   }
 
   addMore() {
-    this.props.navigation.navigate("AddFood", {billId:this.state.billId, table:this.state.table});
+    this.props.navigation.navigate("AddFood");
   }
 
   renderItem = ({ item, index }) => {

@@ -101,12 +101,13 @@ export default class Table extends React.Component {
       //   username: "phuctu1901"
       // })
     })
-    .then(response => response.text())
-    .then(responseText => {
+    .then(response => response.json())
+    .then(responseJson => {
         this.setState({
-          billId: responseText
+          billId: responseJson
         });
-        console.log(responseText);
+        console.log(responseJson);
+        console.log(this.state.billId);
       })
       .catch(error => {
         console.error(error);
@@ -118,7 +119,7 @@ export default class Table extends React.Component {
   }
 
   addMore() {
-    this.props.navigation.navigate("AddFood", {billId:this.state.billId, table:this.state.table});
+    this.props.navigation.navigate("AddFood");
   }
 
   renderItem = ({ item, index }) => {
