@@ -94,7 +94,7 @@ export default class Table extends React.Component {
 
   GetData = () => {
     // Service to get the data from the server to render
-    return fetch("http://192.168.8.100:8000/api/loadMenuByTableId/3", {
+    return fetch("http://restaurantmanagement.ftumedia.tech/api/loadMenuByTableId/3", {
       method: "GET",
       headers: {
         Accept: "application/json",

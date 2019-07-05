@@ -62,7 +62,7 @@ class SignIn extends Component {
   }
   Login() {
     this.setState({ visible: !this.state.visible });
-    fetch("http://192.168.8.100:8000/api/auth/login", {
+    fetch("http://restaurantmanagement.ftumedia.tech/api/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -93,7 +93,7 @@ class SignIn extends Component {
   }
 
   GetDetail() {
-    fetch("http://192.168.8.100:8000/api/details", {
+    fetch("http://restaurantmanagement.ftumedia.tech/api/details", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

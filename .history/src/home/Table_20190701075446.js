@@ -22,7 +22,7 @@ export default class Table extends React.Component {
     this.state = {
       refreshing: true,
       url:
-        "http://192.168.8.100:8000/api/loadMenuByTableId/" +
+        "http://restaurantmanagement.ftumedia.tech/api/loadMenuByTableId/" +
         this.props.navigation.state.params.table.id
     };
 
